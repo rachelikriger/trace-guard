@@ -7,6 +7,17 @@ export type { TraceEvent } from "./core/models/event";
 export type { FlowDefinition, Rule } from "./core/models/flow";
 export type { RunnerConfig } from "./core/models/runnerConfig";
 export type {
+  RuleEvaluation,
+  RuleEvaluationStats,
+  RuleViolation,
+  RuleViolationCode,
+} from "./core/validation/models/ruleEvaluation";
+export type {
+  ValidationReport,
+  ValidationSelector,
+  ValidationStatus,
+} from "./core/validation/models/validationReport";
+export type {
   EventId,
   FlowId,
   RuleId,
@@ -22,3 +33,4 @@ export { failure, success } from "./core/types/result";
 export { normalizeTraceEvent, parseTraceEvent } from "./parsing/events/parseTraceEvent";
 export { parseFlowDefinition } from "./parsing/flow/parseFlowDefinition";
 export { parseRunnerConfig, parseRunnerConfigInput } from "./parsing/config/parseRunnerConfig";
+export { validateFlow } from "./core/validation/validateFlow";
