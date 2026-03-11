@@ -28,6 +28,14 @@ export const combineIssues = (...results: Array<ParseResult<unknown>>): ParseIss
     result.ok ? [] : result.error,
   );
 
+export const mustGet = <T>(result: ParseResult<T>): T => {
+  if (!result.ok) {
+    throw new Error("Attempted to read value from failed ParseResult.");
+  }
+
+  return result.value;
+};
+
 export const asRecord = (value: unknown, path: string): ParseResult<Record<string, unknown>> => {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return fail("invalid_type", path, "Expected an object.", value);

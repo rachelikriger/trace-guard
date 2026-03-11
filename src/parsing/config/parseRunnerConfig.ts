@@ -6,6 +6,7 @@ import {
   asRecord,
   combineIssues,
   fail,
+  mustGet,
   parseOptionalIsoDate,
   parseOptionalPositiveInteger,
   parseOptionalNonEmptyString,
@@ -58,17 +59,22 @@ const parseRunnerConfigShape = (input: RunnerConfigInputShape): ParseResult<Runn
     return failure(issues);
   }
 
+  const timeoutMs: number = mustGet(timeoutResult);
+  const pollMs: number = mustGet(pollResult);
+  const runId: string | undefined = mustGet(runIdResult);
+  const correlationId: string | undefined = mustGet(correlationIdResult);
+  const limit: number | undefined = mustGet(limitResult);
+  const since: Date | undefined = mustGet(sinceResult);
+
   const config: RunnerConfig = {
-    timeoutMs: timeoutResult.value,
-    pollMs: pollResult.value,
-    ...(runIdResult.value !== undefined
-      ? { runId: toBrand<"RunId">(runIdResult.value) }
+    timeoutMs,
+    pollMs,
+    ...(runId !== undefined ? { runId: toBrand<"RunId">(runId) } : {}),
+    ...(correlationId !== undefined
+      ? { correlationId: toBrand<"CorrelationId">(correlationId) }
       : {}),
-    ...(correlationIdResult.value !== undefined
-      ? { correlationId: toBrand<"CorrelationId">(correlationIdResult.value) }
-      : {}),
-    ...(limitResult.value !== undefined ? { limit: limitResult.value } : {}),
-    ...(sinceResult.value !== undefined ? { since: sinceResult.value } : {}),
+    ...(limit !== undefined ? { limit } : {}),
+    ...(since !== undefined ? { since } : {}),
   };
 
   if (config.pollMs > config.timeoutMs) {

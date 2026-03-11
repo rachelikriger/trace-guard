@@ -6,6 +6,7 @@ import {
   asRecord,
   combineIssues,
   parseIsoDate,
+  mustGet,
   parseNonEmptyString,
   parseOptionalNonEmptyString,
   toBrand,
@@ -56,16 +57,21 @@ const parseRawTraceEvent = (input: unknown): ParseResult<RawTraceEvent> => {
     return failure(issues);
   }
 
+  const id: string = mustGet(idResult);
+  const eventType: string = mustGet(eventTypeResult);
+  const timestamp: string = mustGet(timestampResult);
+  const source: string = mustGet(sourceResult);
+  const runId: string | undefined = mustGet(runIdResult);
+  const correlationId: string | undefined = mustGet(correlationIdResult);
+
   const rawEvent: RawTraceEvent = {
-    id: idResult.value,
-    eventType: eventTypeResult.value,
-    timestamp: timestampResult.value,
-    source: sourceResult.value,
+    id,
+    eventType,
+    timestamp,
+    source,
     payload,
-    ...(runIdResult.value !== undefined ? { runId: runIdResult.value } : {}),
-    ...(correlationIdResult.value !== undefined
-      ? { correlationId: correlationIdResult.value }
-      : {}),
+    ...(runId !== undefined ? { runId } : {}),
+    ...(correlationId !== undefined ? { correlationId } : {}),
   };
 
   return success(rawEvent);
@@ -100,17 +106,24 @@ export const normalizeTraceEvent = (raw: RawTraceEvent): ParseResult<TraceEvent>
     return failure(issues);
   }
 
-  const runId = runIdResult.value === undefined ? undefined : toBrand<"RunId">(runIdResult.value);
+  const id: string = mustGet(idResult);
+  const eventType: string = mustGet(eventTypeResult);
+  const timestamp: Date = mustGet(timestampResult);
+  const source: string = mustGet(sourceResult);
+  const rawRunId: string | undefined = mustGet(runIdResult);
+  const rawCorrelationId: string | undefined = mustGet(correlationIdResult);
+
+  const runId = rawRunId === undefined ? undefined : toBrand<"RunId">(rawRunId);
   const correlationId =
-    correlationIdResult.value === undefined
+    rawCorrelationId === undefined
       ? undefined
-      : toBrand<"CorrelationId">(correlationIdResult.value);
+      : toBrand<"CorrelationId">(rawCorrelationId);
 
   const normalized: TraceEvent = {
-    id: toBrand<"EventId">(idResult.value),
-    eventType: toBrand<"EventType">(eventTypeResult.value),
-    timestamp: timestampResult.value,
-    source: toBrand<"SourceName">(sourceResult.value),
+    id: toBrand<"EventId">(id),
+    eventType: toBrand<"EventType">(eventType),
+    timestamp,
+    source: toBrand<"SourceName">(source),
     payload: raw.payload,
     ...(runId !== undefined ? { runId } : {}),
     ...(correlationId !== undefined ? { correlationId } : {}),

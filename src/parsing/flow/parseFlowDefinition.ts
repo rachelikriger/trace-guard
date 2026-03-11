@@ -11,6 +11,7 @@ import {
   asRecord,
   combineIssues,
   fail,
+  mustGet,
   parseNonEmptyString,
   parsePositiveIntegerFromNumber,
   toBrand,
@@ -44,9 +45,11 @@ const parseRule = (input: unknown, index: number): ParseResult<Rule> => {
     return failure(baseIssues);
   }
 
-  const ruleId = toBrand<"RuleId">(idResult.value);
+  const kind: string = mustGet(kindResult);
+  const id: string = mustGet(idResult);
+  const ruleId = toBrand<"RuleId">(id);
 
-  if (kindResult.value === "expected") {
+  if (kind === "expected") {
     const eventTypeResult: ParseResult<string> = parseNonEmptyString(
       ruleRecord.eventType,
       `flow.rules[${index}].eventType`,
@@ -58,12 +61,12 @@ const parseRule = (input: unknown, index: number): ParseResult<Rule> => {
     const rule: ExpectedRule = {
       kind: "expected",
       id: ruleId,
-      eventType: toBrand<"EventType">(eventTypeResult.value),
+      eventType: toBrand<"EventType">(mustGet(eventTypeResult)),
     };
     return success(rule);
   }
 
-  if (kindResult.value === "forbidden") {
+  if (kind === "forbidden") {
     const eventTypeResult: ParseResult<string> = parseNonEmptyString(
       ruleRecord.eventType,
       `flow.rules[${index}].eventType`,
@@ -75,12 +78,12 @@ const parseRule = (input: unknown, index: number): ParseResult<Rule> => {
     const rule: ForbiddenRule = {
       kind: "forbidden",
       id: ruleId,
-      eventType: toBrand<"EventType">(eventTypeResult.value),
+      eventType: toBrand<"EventType">(mustGet(eventTypeResult)),
     };
     return success(rule);
   }
 
-  if (kindResult.value === "order") {
+  if (kind === "order") {
     const beforeResult: ParseResult<string> = parseNonEmptyString(
       ruleRecord.beforeEventType,
       `flow.rules[${index}].beforeEventType`,
@@ -101,8 +104,8 @@ const parseRule = (input: unknown, index: number): ParseResult<Rule> => {
     const rule: OrderRule = {
       kind: "order",
       id: ruleId,
-      beforeEventType: toBrand<"EventType">(beforeResult.value),
-      afterEventType: toBrand<"EventType">(afterResult.value),
+      beforeEventType: toBrand<"EventType">(mustGet(beforeResult)),
+      afterEventType: toBrand<"EventType">(mustGet(afterResult)),
     };
     return success(rule);
   }
@@ -111,7 +114,7 @@ const parseRule = (input: unknown, index: number): ParseResult<Rule> => {
     "invalid_literal",
     `flow.rules[${index}].kind`,
     "Rule kind must be one of: expected, forbidden, order.",
-    kindResult.value,
+    kind,
   );
 };
 
@@ -161,13 +164,15 @@ export const parseFlowDefinition = (input: unknown): ParseResult<FlowDefinition>
     return failure(issues);
   }
 
+  const flowId: string = mustGet(flowIdResult);
+  const version: number = mustGet(versionResult);
+  const description: string | undefined = mustGet(descriptionResult);
+
   const flow: FlowDefinition = {
-    flowId: toBrand<"FlowId">(flowIdResult.value),
-    version: versionResult.value,
+    flowId: toBrand<"FlowId">(flowId),
+    version,
     rules: parsedRules,
-    ...(descriptionResult.value !== undefined
-      ? { description: descriptionResult.value }
-      : {}),
+    ...(description !== undefined ? { description } : {}),
   };
 
   return success(flow);
