@@ -1,5 +1,5 @@
-import type { TraceEvent } from "../../models/event";
-import type { ForbiddenRule } from "../../models/flow";
+import type { TraceEvent } from "../../../models/internal/event";
+import type { ForbiddenRule } from "../../../models/internal/flow";
 import type { RuleEvaluation, RuleViolation } from "../models/ruleEvaluation";
 import { buildStats } from "./evaluatorUtils";
 

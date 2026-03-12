@@ -1,6 +1,7 @@
-import type { RawTraceEvent } from "../../contracts/raw/event";
-import type { ParseIssue } from "../../core/errors/parseIssue";
-import type { TraceEvent } from "../../core/models/event";
+import type { RawTraceEvent } from "../../models/raw/event";
+import type { ParseIssue } from "../../core/types/parseIssue";
+import type { ParseResult } from "../../core/types/parseResult";
+import type { TraceEvent } from "../../models/internal/event";
 import { failure, success } from "../../core/types/result";
 import {
   asRecord,
@@ -11,7 +12,6 @@ import {
   parseOptionalNonEmptyString,
   toBrand,
   fail,
-  type ParseResult,
 } from "../common/parsers";
 
 const parseRawTraceEvent = (input: unknown): ParseResult<RawTraceEvent> => {

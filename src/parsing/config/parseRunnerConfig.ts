@@ -1,6 +1,7 @@
-import type { RawRunnerConfig } from "../../contracts/raw/runnerConfig";
-import type { ParseIssue } from "../../core/errors/parseIssue";
-import type { RunnerConfig } from "../../core/models/runnerConfig";
+import type { RawRunnerConfig } from "../../models/raw/runnerConfig";
+import type { ParseIssue } from "../../core/types/parseIssue";
+import type { ParseResult } from "../../core/types/parseResult";
+import type { RunnerConfig } from "../../models/internal/runnerConfig";
 import { failure, success } from "../../core/types/result";
 import {
   asRecord,
@@ -12,7 +13,6 @@ import {
   parseOptionalNonEmptyString,
   parsePositiveInteger,
   toBrand,
-  type ParseResult,
 } from "../common/parsers";
 
 interface RunnerConfigInputShape {

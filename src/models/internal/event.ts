@@ -4,7 +4,7 @@ import type {
   EventType,
   RunId,
   SourceName,
-} from "../types/brand";
+} from "../../core/types/brand";
 
 export interface TraceEvent {
   readonly id: EventId;

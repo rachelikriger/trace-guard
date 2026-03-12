@@ -1,5 +1,5 @@
 import type { EventId, RuleId } from "../../types/brand";
-import type { Rule } from "../../models/flow";
+import type { Rule } from "../../../models/internal/flow";
 
 export type RuleViolationCode =
   | "expected_missing"

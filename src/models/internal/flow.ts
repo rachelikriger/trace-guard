@@ -1,4 +1,4 @@
-import type { EventType, FlowId, RuleId } from "../types/brand";
+import type { EventType, FlowId, RuleId } from "../../core/types/brand";
 
 export interface ExpectedRule {
   readonly kind: "expected";

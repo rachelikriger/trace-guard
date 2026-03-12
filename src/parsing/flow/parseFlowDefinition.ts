@@ -1,12 +1,13 @@
-import type { RawFlowDefinition, RawRule } from "../../contracts/raw/flow";
-import type { ParseIssue } from "../../core/errors/parseIssue";
+import type { RawFlowDefinition, RawRule } from "../../models/raw/flow";
+import type { ParseIssue } from "../../core/types/parseIssue";
+import type { ParseResult } from "../../core/types/parseResult";
 import type {
   ExpectedRule,
   FlowDefinition,
   ForbiddenRule,
   OrderRule,
   Rule,
-} from "../../core/models/flow";
+} from "../../models/internal/flow";
 import { failure, success } from "../../core/types/result";
 import {
   asRecord,
@@ -16,7 +17,6 @@ import {
   parseNonEmptyString,
   parsePositiveIntegerFromNumber,
   toBrand,
-  type ParseResult,
 } from "../common/parsers";
 
 const parseRawRule = (input: unknown, index: number): ParseResult<RawRule> => {

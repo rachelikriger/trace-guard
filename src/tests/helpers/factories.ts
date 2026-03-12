@@ -1,7 +1,7 @@
 import { parseTraceEvent } from "../../parsing/events/parseTraceEvent";
 import { parseFlowDefinition } from "../../parsing/flow/parseFlowDefinition";
-import type { TraceEvent } from "../../core/models/event";
-import type { FlowDefinition } from "../../core/models/flow";
+import type { TraceEvent } from "../../models/internal/event";
+import type { FlowDefinition } from "../../models/internal/flow";
 
 export const createEvent = (input: {
   readonly id: string;

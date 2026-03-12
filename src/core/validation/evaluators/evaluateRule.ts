@@ -1,5 +1,5 @@
-import type { TraceEvent } from "../../models/event";
-import type { Rule } from "../../models/flow";
+import type { TraceEvent } from "../../../models/internal/event";
+import type { Rule } from "../../../models/internal/flow";
 import type { RuleEvaluation } from "../models/ruleEvaluation";
 import { evaluateExpectedRule } from "./evaluateExpectedRule";
 import { evaluateForbiddenRule } from "./evaluateForbiddenRule";

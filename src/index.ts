@@ -1,11 +1,11 @@
-export type { RawTraceEvent } from "./contracts/raw/event";
-export type { RawFlowDefinition, RawRule } from "./contracts/raw/flow";
-export type { RawRunnerConfig } from "./contracts/raw/runnerConfig";
+export type { RawTraceEvent } from "./models/raw/event";
+export type { RawFlowDefinition, RawRule } from "./models/raw/flow";
+export type { RawRunnerConfig } from "./models/raw/runnerConfig";
 
-export type { ParseIssue, ParseIssueCode } from "./core/errors/parseIssue";
-export type { TraceEvent } from "./core/models/event";
-export type { FlowDefinition, Rule } from "./core/models/flow";
-export type { RunnerConfig } from "./core/models/runnerConfig";
+export type { ParseIssue, ParseIssueCode } from "./core/types/parseIssue";
+export type { TraceEvent } from "./models/internal/event";
+export type { FlowDefinition, Rule } from "./models/internal/flow";
+export type { RunnerConfig } from "./models/internal/runnerConfig";
 export type {
   RuleEvaluation,
   RuleEvaluationStats,
@@ -26,6 +26,7 @@ export type {
   EventType,
   SourceName,
 } from "./core/types/brand";
+export type { ParseResult } from "./core/types/parseResult";
 export type { Result } from "./core/types/result";
 
 export { failure, success } from "./core/types/result";

@@ -1,8 +1,7 @@
-import type { ParseIssue, ParseIssueCode } from "../../core/errors/parseIssue";
+import type { ParseIssue, ParseIssueCode } from "../../core/types/parseIssue";
 import type { Brand } from "../../core/types/brand";
-import { failure, success, type Result } from "../../core/types/result";
-
-export type ParseResult<T> = Result<T, ParseIssue[]>;
+import type { ParseResult } from "../../core/types/parseResult";
+import { failure, success } from "../../core/types/result";
 
 const createIssue = (
   code: ParseIssueCode,

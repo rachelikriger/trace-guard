@@ -1,4 +1,4 @@
-import type { TraceEvent } from "../../models/event";
+import type { TraceEvent } from "../../../models/internal/event";
 import type { RuleEvaluationStats } from "../models/ruleEvaluation";
 
 export const buildStats = (matchedEvents: TraceEvent[]): RuleEvaluationStats => {
