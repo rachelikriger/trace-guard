@@ -30,7 +30,17 @@ export type { Result } from "./core/types/result";
 
 export { failure, success } from "./core/types/result";
 
-export { normalizeTraceEvent, parseTraceEvent } from "./parsing/events/parseTraceEvent";
-export { parseFlowDefinition } from "./parsing/flow/parseFlowDefinition";
-export { parseRunnerConfig, parseRunnerConfigInput } from "./parsing/config/parseRunnerConfig";
+export {
+  convertRawTraceEventToTraceEvent,
+  parseTraceEvent,
+} from "./parsing/events/parseTraceEvent";
+export {
+  convertRawFlowDefinitionToFlowDefinition,
+  parseFlowDefinition,
+} from "./parsing/flow/parseFlowDefinition";
+export {
+  convertRawRunnerConfigToRunnerConfig,
+  parseRunnerConfig,
+  parseRunnerConfigInput,
+} from "./parsing/config/parseRunnerConfig";
 export { validateFlow } from "./core/validation/validateFlow";

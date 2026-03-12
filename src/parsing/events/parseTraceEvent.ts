@@ -77,7 +77,9 @@ const parseRawTraceEvent = (input: unknown): ParseResult<RawTraceEvent> => {
   return success(rawEvent);
 };
 
-export const normalizeTraceEvent = (raw: RawTraceEvent): ParseResult<TraceEvent> => {
+export const convertRawTraceEventToTraceEvent = (
+  raw: RawTraceEvent,
+): ParseResult<TraceEvent> => {
   const idResult: ParseResult<string> = parseNonEmptyString(raw.id, "event.id");
   const eventTypeResult: ParseResult<string> = parseNonEmptyString(
     raw.eventType,
@@ -138,5 +140,5 @@ export const parseTraceEvent = (input: unknown): ParseResult<TraceEvent> => {
     return rawResult;
   }
 
-  return normalizeTraceEvent(rawResult.value);
+  return convertRawTraceEventToTraceEvent(rawResult.value);
 };

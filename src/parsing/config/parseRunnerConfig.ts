@@ -24,7 +24,9 @@ interface RunnerConfigInputShape {
   readonly since: unknown;
 }
 
-const parseRunnerConfigShape = (input: RunnerConfigInputShape): ParseResult<RunnerConfig> => {
+const convertRunnerConfigShapeToRunnerConfig = (
+  input: RunnerConfigInputShape,
+): ParseResult<RunnerConfig> => {
   const runIdResult: ParseResult<string | undefined> = parseOptionalNonEmptyString(
     input.runId,
     "config.runId",
@@ -91,8 +93,10 @@ const parseRunnerConfigShape = (input: RunnerConfigInputShape): ParseResult<Runn
   return success(config);
 };
 
-export const parseRunnerConfig = (raw: RawRunnerConfig): ParseResult<RunnerConfig> =>
-  parseRunnerConfigShape({
+export const convertRawRunnerConfigToRunnerConfig = (
+  raw: RawRunnerConfig,
+): ParseResult<RunnerConfig> =>
+  convertRunnerConfigShapeToRunnerConfig({
     runId: raw.runId,
     correlationId: raw.correlationId,
     timeoutMs: raw.timeoutMs,
@@ -100,6 +104,9 @@ export const parseRunnerConfig = (raw: RawRunnerConfig): ParseResult<RunnerConfi
     limit: raw.limit,
     since: raw.since,
   });
+
+export const parseRunnerConfig = (raw: RawRunnerConfig): ParseResult<RunnerConfig> =>
+  convertRawRunnerConfigToRunnerConfig(raw);
 
 export const parseRunnerConfigInput = (input: unknown): ParseResult<RunnerConfig> => {
   const recordResult: ParseResult<Record<string, unknown>> = asRecord(input, "config");
@@ -116,7 +123,7 @@ export const parseRunnerConfigInput = (input: unknown): ParseResult<RunnerConfig
     return fail("missing_field", "config.pollMs", "Missing required field: pollMs.");
   }
 
-  return parseRunnerConfigShape({
+  return convertRunnerConfigShapeToRunnerConfig({
     runId: record.runId,
     correlationId: record.correlationId,
     timeoutMs: record.timeoutMs,
