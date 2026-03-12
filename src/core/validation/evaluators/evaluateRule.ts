@@ -5,19 +5,31 @@ import { evaluateExpectedRule } from "./evaluateExpectedRule";
 import { evaluateForbiddenRule } from "./evaluateForbiddenRule";
 import { evaluateOrderRule } from "./evaluateOrderRule";
 
-const assertNever = (value: never): never => {
-  throw new Error(`Unhandled rule kind: ${JSON.stringify(value)}`);
+type RuleEvaluator = (rule: Rule, events: TraceEvent[]) => RuleEvaluation;
+type RuleByKind<K extends Rule["kind"]> = Extract<Rule, { kind: K }>;
+
+const isRuleKind = <K extends Rule["kind"]>(rule: Rule, kind: K): rule is RuleByKind<K> =>
+  rule.kind === kind;
+
+const createKindEvaluator = <K extends Rule["kind"]>(
+  kind: K,
+  evaluator: (rule: RuleByKind<K>, events: TraceEvent[]) => RuleEvaluation,
+): RuleEvaluator => {
+  return (rule: Rule, events: TraceEvent[]): RuleEvaluation => {
+    if (!isRuleKind(rule, kind)) {
+      throw new Error(`Rule evaluator mismatch: expected "${kind}" but got "${rule.kind}".`);
+    }
+
+    return evaluator(rule, events);
+  };
 };
 
+const evaluatorRegistry = {
+  expected: createKindEvaluator("expected", evaluateExpectedRule),
+  forbidden: createKindEvaluator("forbidden", evaluateForbiddenRule),
+  order: createKindEvaluator("order", evaluateOrderRule),
+} satisfies Record<Rule["kind"], RuleEvaluator>;
+
 export const evaluateRule = (rule: Rule, events: TraceEvent[]): RuleEvaluation => {
-  switch (rule.kind) {
-    case "expected":
-      return evaluateExpectedRule(rule, events);
-    case "forbidden":
-      return evaluateForbiddenRule(rule, events);
-    case "order":
-      return evaluateOrderRule(rule, events);
-    default:
-      return assertNever(rule);
-  }
+  return evaluatorRegistry[rule.kind](rule, events);
 };
