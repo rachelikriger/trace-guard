@@ -28,6 +28,17 @@ export type {
 } from "./core/types/brand";
 export type { ParseResult } from "./core/types/parseResult";
 export type { Result } from "./core/types/result";
+export type {
+  ValidationRunIteration,
+  ValidationRunResult,
+  ValidationRunStatus,
+} from "./core/runner/models/validationRunResult";
+export type {
+  EventCursor,
+  EventSource,
+  EventSourcePollRequest,
+  EventSourcePollResponse,
+} from "./sources/eventSource";
 
 export { failure, success } from "./core/types/result";
 
@@ -45,3 +56,5 @@ export {
   parseRunnerConfigInput,
 } from "./parsing/config/parseRunnerConfig";
 export { validateFlow } from "./core/validation/validateFlow";
+export { runValidation } from "./core/runner/validationRunner";
+export { MockEventSource } from "./sources/mock/mockEventSource";

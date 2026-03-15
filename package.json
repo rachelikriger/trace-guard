@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "npm run build && node --test dist/tests/runPhase2Tests.test.js"
+    "test": "npm run build && node --test dist/tests/runPhase2Tests.test.js",
+    "demo:runner": "npm run build && node dist/examples/runMockRunnerDemo.js"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
