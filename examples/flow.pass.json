@@ -1,0 +1,22 @@
+{
+  "flowId": "demo-checkout-flow",
+  "version": 1,
+  "rules": [
+    {
+      "kind": "expected",
+      "id": "rule-expected-started",
+      "eventType": "PAYMENT_STARTED"
+    },
+    {
+      "kind": "forbidden",
+      "id": "rule-no-failed",
+      "eventType": "PAYMENT_FAILED"
+    },
+    {
+      "kind": "order",
+      "id": "rule-order-started-before-completed",
+      "beforeEventType": "PAYMENT_STARTED",
+      "afterEventType": "PAYMENT_COMPLETED"
+    }
+  ]
+}

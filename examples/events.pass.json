@@ -1,0 +1,18 @@
+[
+  {
+    "id": "event-1",
+    "eventType": "PAYMENT_STARTED",
+    "timestamp": "2026-03-12T15:00:00.000Z",
+    "source": "demo-source",
+    "payload": {},
+    "runId": "run-42"
+  },
+  {
+    "id": "event-2",
+    "eventType": "PAYMENT_COMPLETED",
+    "timestamp": "2026-03-12T15:00:01.000Z",
+    "source": "demo-source",
+    "payload": {},
+    "runId": "run-42"
+  }
+]
