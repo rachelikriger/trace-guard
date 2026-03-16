@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Phase 2 Tests (Full Suite)",
+      "name": "Debug Core Tests (Full Suite)",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -10,7 +10,7 @@
       "runtimeArgs": [
         "--enable-source-maps",
         "--test",
-        "${workspaceFolder}/dist/tests/runPhase2Tests.test.js"
+        "${workspaceFolder}/dist/tests/runCoreTests.test.js"
       ],
       "preLaunchTask": "npm: build",
       "skipFiles": ["<node_internals>/**"],

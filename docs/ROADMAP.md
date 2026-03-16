@@ -1,26 +1,27 @@
 # Trace-Guard Roadmap
 
-## Phase 3: Runner and Polling Orchestration (Next)
+## Phase 3: Runner and Polling Orchestration (Completed)
 
 Goal: execute validation repeatedly over time until success or timeout.
 
-Planned scope:
+Implemented scope:
 
-- introduce `EventSource` contract
-- implement `MockEventSource` for iterative batches
-- implement `ValidationRunner` orchestration:
+- introduced `EventSource` contract
+- implemented `MockEventSource` for iterative batches
+- implemented `ValidationRunner` orchestration:
   - poll
-  - merge events
+  - dedupe + accumulate events
   - run validation
   - stop on pass or timeout
-- add runner-focused tests (timing, polling, timeout semantics)
+- added runner-focused tests (timing, polling, timeout semantics)
+- added demo runner script for iteration-by-iteration learning
 
-Out of scope for this phase:
+Still out of scope:
 
 - real Elastic integration
 - final CLI UX polish
 
-## Phase 4: CLI Integration
+## Phase 4: CLI Integration (Next)
 
 Goal: expose a practical command interface for running validations.
 

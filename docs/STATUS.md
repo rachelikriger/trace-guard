@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-Status: After Phase 2, before full Phase 3 runner implementation.
+Status: After Phase 3 runner implementation, before full CLI integration and external adapters.
 
 ## Completed
 
@@ -32,6 +32,19 @@ Status: After Phase 2, before full Phase 3 runner implementation.
 - rich `ValidationReport` and `RuleEvaluation` model
 - focused test suite covering happy paths and edge cases
 
+### Phase 3: Runner and Polling
+
+- `EventSource` abstraction and `MockEventSource`
+- `runValidation` orchestration loop with:
+  - polling
+  - deduplication by event ID
+  - event accumulation across iterations
+  - early stop on pass
+  - timeout result path
+- runner-level result model with iteration telemetry
+- end-to-end mock demo (`demo:runner`)
+- runner-focused tests for pass/timeout/dedup behavior
+
 ## Important Decisions Already Made
 
 - internal validation logic works only on internal models
@@ -41,8 +54,6 @@ Status: After Phase 2, before full Phase 3 runner implementation.
 
 ## Open Work (High-Level)
 
-- runner orchestration loop (polling until pass/timeout)
-- source abstraction + mock source behavior for iterative polling
 - CLI orchestration and reporting UX
 - external adapters (Elastic) later, without changing core validation logic
 
