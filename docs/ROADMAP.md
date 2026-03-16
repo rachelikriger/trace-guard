@@ -58,3 +58,15 @@ No temporary architecture rewrites:
 - each phase should be a valid slice of the final product
 - keep boundaries stable
 - evolve features, not foundational contracts
+
+## Cross-Cutting Design Tracks
+
+In parallel with feature phases, maintain these design tracks:
+
+- table-driven test patterns for evaluator-heavy logic
+- UI automation integration pattern (UI action -> correlation ID -> Trace-Guard validation)
+- richer order/sequence semantics via additive rule kinds (not by overloading one rule)
+
+Detailed rationale and recommendations are documented in:
+
+- [Design Notes](DESIGN_NOTES.md)
