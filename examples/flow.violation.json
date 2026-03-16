@@ -1,0 +1,11 @@
+{
+  "flowId": "demo-violation-flow",
+  "version": 1,
+  "rules": [
+    {
+      "kind": "forbidden",
+      "id": "rule-no-failed",
+      "eventType": "PAYMENT_FAILED"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "flowId": "demo-timeout-flow",
+  "version": 1,
+  "rules": [
+    {
+      "kind": "expected",
+      "id": "rule-expected-completed",
+      "eventType": "PAYMENT_COMPLETED"
+    }
+  ]
+}
