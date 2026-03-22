@@ -83,7 +83,7 @@ const runDemo = async (): Promise<void> => {
       flow: flowResult.value,
       config: configResult.value,
       source,
-      selector: { runId: configResult.value.runId },
+      eventScope: { runId: configResult.value.runId },
     },
   );
 

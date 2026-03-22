@@ -13,10 +13,11 @@ export type {
   RuleViolationCode,
 } from "./core/validation/models/ruleEvaluation";
 export type {
+  EventScope,
   ValidationReport,
-  ValidationSelector,
   ValidationStatus,
 } from "./core/validation/models/validationReport";
+export { filterEventsByScope, matchesEventScope } from "./core/validation/models/validationReport";
 export type {
   EventId,
   FlowId,

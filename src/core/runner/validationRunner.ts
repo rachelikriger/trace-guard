@@ -3,14 +3,14 @@ import type { FlowDefinition } from "../../models/internal/flow";
 import type { RunnerConfig } from "../../models/internal/runnerConfig";
 import type { EventSource, EventCursor } from "../../sources/eventSource";
 import { validateFlow } from "../validation/validateFlow";
-import type { ValidationSelector } from "../validation/models/validationReport";
+import type { EventScope } from "../validation/models/validationReport";
 import type { ValidationRunIteration, ValidationRunResult } from "./models/validationRunResult";
 
 export interface ValidationRunnerOptions {
   readonly flow: FlowDefinition;
   readonly config: RunnerConfig;
   readonly source: EventSource;
-  readonly selector?: ValidationSelector;
+  readonly eventScope?: EventScope;
 }
 
 interface RunnerDependencies {
@@ -114,7 +114,7 @@ export const runValidation = async (
     const pollRequest = {
       iteration: iterationNumber,
       now: dependencies.now(),
-      ...(options.selector !== undefined ? { selector: options.selector } : {}),
+      ...(options.eventScope !== undefined ? { eventScope: options.eventScope } : {}),
       ...(options.config.since !== undefined ? { since: options.config.since } : {}),
       ...(cursor !== undefined ? { cursor } : {}),
       ...(options.config.limit !== undefined ? { limit: options.config.limit } : {}),
@@ -142,7 +142,7 @@ export const runValidation = async (
     }
 
     const collectedEvents: TraceEvent[] = Array.from(collectedById.values());
-    const report = validateFlow(options.flow, collectedEvents, options.selector);
+    const report = validateFlow(options.flow, collectedEvents, options.eventScope);
 
     iterations.push({
       iteration: iterationNumber,

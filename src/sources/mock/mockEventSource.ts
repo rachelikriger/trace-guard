@@ -1,4 +1,5 @@
 import type { TraceEvent } from "../../models/internal/event";
+import { filterEventsByScope } from "../../core/validation/models/validationReport";
 import type { EventSource, EventSourcePollRequest, EventSourcePollResponse } from "../eventSource";
 
 const isAfterCursor = (event: TraceEvent, cursor: EventSourcePollRequest["cursor"]): boolean => {
@@ -30,18 +31,7 @@ export class MockEventSource implements EventSource {
     const rawBatch: ReadonlyArray<TraceEvent> =
       this.batches[request.iteration - 1] ?? [];
 
-    let events: TraceEvent[] = [...rawBatch];
-
-    if (request.selector?.runId !== undefined) {
-      events = events.filter((event: TraceEvent): boolean => event.runId === request.selector?.runId);
-    }
-
-    if (request.selector?.correlationId !== undefined) {
-      events = events.filter(
-        (event: TraceEvent): boolean =>
-          event.correlationId === request.selector?.correlationId,
-      );
-    }
+    let events: TraceEvent[] = filterEventsByScope([...rawBatch], request.eventScope);
 
     if (request.since !== undefined) {
       const sinceTime: number = request.since.getTime();

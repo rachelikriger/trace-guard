@@ -71,7 +71,7 @@ describe("validateFlow", () => {
     assert.equal(report.violations.length >= 3, true);
   });
 
-  it("applies selector and evaluates only scoped events", () => {
+  it("applies event scope and evaluates only scoped events", () => {
     const flow = createSampleFlow();
     const events = [
       createEvent({
@@ -100,7 +100,7 @@ describe("validateFlow", () => {
       pollMs: 100,
     });
     if (!parsedConfig.ok) {
-      throw new Error(`Failed to build selector fixture: ${JSON.stringify(parsedConfig.error)}`);
+      throw new Error(`Failed to build event scope fixture: ${JSON.stringify(parsedConfig.error)}`);
     }
     if (parsedConfig.value.runId === undefined) {
       throw new Error("Expected runId in parsed config fixture.");
@@ -111,6 +111,6 @@ describe("validateFlow", () => {
     assert.equal(report.status, "pass");
     assert.equal(report.totalEvents, 3);
     assert.equal(report.scopedEvents, 2);
-    assert.equal(report.selector?.runId, parsedConfig.value.runId);
+    assert.equal(report.eventScope?.runId, parsedConfig.value.runId);
   });
 });

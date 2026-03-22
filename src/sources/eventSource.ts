@@ -1,5 +1,5 @@
 import type { TraceEvent } from "../models/internal/event";
-import type { ValidationSelector } from "../core/validation/models/validationReport";
+import type { EventScope } from "../core/validation/models/validationReport";
 
 export interface EventCursor {
   readonly timestamp: Date;
@@ -8,7 +8,7 @@ export interface EventCursor {
 
 export interface EventSourcePollRequest {
   readonly iteration: number;
-  readonly selector?: ValidationSelector;
+  readonly eventScope?: EventScope;
   readonly since?: Date;
   readonly cursor?: EventCursor;
   readonly limit?: number;

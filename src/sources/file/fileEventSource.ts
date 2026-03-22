@@ -1,4 +1,5 @@
 import type { TraceEvent } from "../../models/internal/event";
+import { filterEventsByScope } from "../../core/validation/models/validationReport";
 import type { EventSource, EventSourcePollRequest, EventSourcePollResponse } from "../eventSource";
 
 const isAfterCursor = (event: TraceEvent, cursor: EventSourcePollRequest["cursor"]): boolean => {
@@ -27,18 +28,7 @@ export class FileEventSource implements EventSource {
   }
 
   public async poll(request: EventSourcePollRequest): Promise<EventSourcePollResponse> {
-    let filtered: TraceEvent[] = [...this.events];
-
-    if (request.selector?.runId !== undefined) {
-      filtered = filtered.filter((event: TraceEvent): boolean => event.runId === request.selector?.runId);
-    }
-
-    if (request.selector?.correlationId !== undefined) {
-      filtered = filtered.filter(
-        (event: TraceEvent): boolean =>
-          event.correlationId === request.selector?.correlationId,
-      );
-    }
+    let filtered: TraceEvent[] = filterEventsByScope([...this.events], request.eventScope);
 
     if (request.since !== undefined) {
       const sinceTime = request.since.getTime();

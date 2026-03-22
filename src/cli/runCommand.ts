@@ -4,7 +4,7 @@ import { parseRunnerConfigInput } from "../parsing/config/parseRunnerConfig";
 import { parseTraceEvent } from "../parsing/events/parseTraceEvent";
 import { runValidation } from "../core/runner/validationRunner";
 import type { ValidationRunResult } from "../core/runner/models/validationRunResult";
-import type { ValidationSelector } from "../core/validation/models/validationReport";
+import type { EventScope } from "../core/validation/models/validationReport";
 import type { ParseIssue } from "../core/types/parseIssue";
 import type { TraceEvent } from "../models/internal/event";
 import { FileEventSource } from "../sources/file/fileEventSource";
@@ -114,7 +114,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
     };
   }
 
-  const selector: ValidationSelector | undefined =
+  const eventScope: EventScope | undefined =
     configResult.value.runId !== undefined || configResult.value.correlationId !== undefined
       ? {
           ...(configResult.value.runId !== undefined ? { runId: configResult.value.runId } : {}),
@@ -129,7 +129,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
     flow: flowResult.value,
     config: configResult.value,
     source,
-    ...(selector !== undefined ? { selector } : {}),
+    ...(eventScope !== undefined ? { eventScope } : {}),
   });
 
   return {

@@ -1,36 +1,19 @@
 import type { TraceEvent } from "../../models/internal/event";
 import type { FlowDefinition } from "../../models/internal/flow";
 import type { RuleEvaluation, RuleViolation } from "./models/ruleEvaluation";
-import type { ValidationReport, ValidationSelector } from "./models/validationReport";
+import {
+  filterEventsByScope,
+  type EventScope,
+  type ValidationReport,
+} from "./models/validationReport";
 import { evaluateRule } from "./evaluators/evaluateRule";
-
-const applySelector = (events: TraceEvent[], selector?: ValidationSelector): TraceEvent[] => {
-  if (selector === undefined) {
-    return events;
-  }
-
-  return events.filter((event: TraceEvent): boolean => {
-    if (selector.runId !== undefined && event.runId !== selector.runId) {
-      return false;
-    }
-
-    if (
-      selector.correlationId !== undefined &&
-      event.correlationId !== selector.correlationId
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-};
 
 export const validateFlow = (
   flow: FlowDefinition,
   events: TraceEvent[],
-  selector?: ValidationSelector,
+  eventScope?: EventScope,
 ): ValidationReport => {
-  const scopedEvents: TraceEvent[] = applySelector(events, selector);
+  const scopedEvents: TraceEvent[] = filterEventsByScope(events, eventScope);
   const ruleEvaluations: RuleEvaluation[] = flow.rules.map((rule) => evaluateRule(rule, scopedEvents));
   const violations: RuleViolation[] = ruleEvaluations.flatMap(
     (evaluation: RuleEvaluation): RuleViolation[] => evaluation.violations,
@@ -52,6 +35,6 @@ export const validateFlow = (
     failedRuleCount,
     ruleEvaluations,
     violations,
-    ...(selector !== undefined ? { selector } : {}),
+    ...(eventScope !== undefined ? { eventScope } : {}),
   };
 };
