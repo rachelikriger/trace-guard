@@ -9,7 +9,7 @@ interface RunPaths {
 
 const usage = [
   "Usage:",
-  "  trace-guard run --flow <flow.json> --config <config.json> --events <events.json>",
+  "  trace-guardrun --flow <flow.json> --config <config.json> --events <events.json>",
 ].join("\n");
 
 const readOptionValue = (

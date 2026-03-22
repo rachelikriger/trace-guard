@@ -80,52 +80,23 @@ const parseRawTraceEvent = (input: unknown): ParseResult<RawTraceEvent> => {
 export const convertRawTraceEventToTraceEvent = (
   raw: RawTraceEvent,
 ): ParseResult<TraceEvent> => {
-  const idResult: ParseResult<string> = parseNonEmptyString(raw.id, "event.id");
-  const eventTypeResult: ParseResult<string> = parseNonEmptyString(
-    raw.eventType,
-    "event.eventType",
-  );
   const timestampResult: ParseResult<Date> = parseIsoDate(raw.timestamp, "event.timestamp");
-  const sourceResult: ParseResult<string> = parseNonEmptyString(raw.source, "event.source");
-  const runIdResult: ParseResult<string | undefined> = parseOptionalNonEmptyString(
-    raw.runId,
-    "event.runId",
-  );
-  const correlationIdResult: ParseResult<string | undefined> = parseOptionalNonEmptyString(
-    raw.correlationId,
-    "event.correlationId",
-  );
-
-  const issues: ParseIssue[] = combineIssues(
-    idResult,
-    eventTypeResult,
-    timestampResult,
-    sourceResult,
-    runIdResult,
-    correlationIdResult,
-  );
-  if (issues.length > 0) {
-    return failure(issues);
+  if (!timestampResult.ok) {
+    return failure(timestampResult.error);
   }
 
-  const id: string = mustGet(idResult);
-  const eventType: string = mustGet(eventTypeResult);
-  const timestamp: Date = mustGet(timestampResult);
-  const source: string = mustGet(sourceResult);
-  const rawRunId: string | undefined = mustGet(runIdResult);
-  const rawCorrelationId: string | undefined = mustGet(correlationIdResult);
-
-  const runId = rawRunId === undefined ? undefined : toBrand<"RunId">(rawRunId);
+  const timestamp: Date = timestampResult.value;
+  const runId = raw.runId === undefined ? undefined : toBrand<"RunId">(raw.runId);
   const correlationId =
-    rawCorrelationId === undefined
+    raw.correlationId === undefined
       ? undefined
-      : toBrand<"CorrelationId">(rawCorrelationId);
+      : toBrand<"CorrelationId">(raw.correlationId);
 
   const normalized: TraceEvent = {
-    id: toBrand<"EventId">(id),
-    eventType: toBrand<"EventType">(eventType),
+    id: toBrand<"EventId">(raw.id),
+    eventType: toBrand<"EventType">(raw.eventType),
     timestamp,
-    source: toBrand<"SourceName">(source),
+    source: toBrand<"SourceName">(raw.source),
     payload: raw.payload,
     ...(runId !== undefined ? { runId } : {}),
     ...(correlationId !== undefined ? { correlationId } : {}),
