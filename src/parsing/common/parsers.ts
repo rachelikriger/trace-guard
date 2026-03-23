@@ -97,7 +97,27 @@ export const parseFiniteNumber = (value: unknown, path: string): ParseResult<num
   return fail("invalid_type", path, "Expected a number or numeric string.", value);
 };
 
-export const parsePositiveInteger = (
+const validatePositiveInteger = (
+  value: number,
+  path: string,
+  originalInput: unknown,
+): ParseResult<number> => {
+  if (!Number.isFinite(value)) {
+    return fail("invalid_number", path, "Expected a finite number.", originalInput);
+  }
+
+  if (!Number.isInteger(value)) {
+    return fail("invalid_number", path, "Expected an integer number.", originalInput);
+  }
+
+  if (value <= 0) {
+    return fail("out_of_range", path, "Expected a value greater than zero.", originalInput);
+  }
+
+  return success(value);
+};
+
+export const parsePositiveIntegerFromStringOrNumber = (
   value: unknown,
   path: string,
 ): ParseResult<number> => {
@@ -106,15 +126,7 @@ export const parsePositiveInteger = (
     return parsed;
   }
 
-  if (!Number.isInteger(parsed.value)) {
-    return fail("invalid_number", path, "Expected an integer number.", value);
-  }
-
-  if (parsed.value <= 0) {
-    return fail("out_of_range", path, "Expected a value greater than zero.", value);
-  }
-
-  return success(parsed.value);
+  return validatePositiveInteger(parsed.value, path, value);
 };
 
 export const parsePositiveIntegerFromNumber = (
@@ -125,15 +137,7 @@ export const parsePositiveIntegerFromNumber = (
     return fail("invalid_type", path, "Expected a number.", value);
   }
 
-  if (!Number.isInteger(value)) {
-    return fail("invalid_number", path, "Expected an integer number.", value);
-  }
-
-  if (value <= 0) {
-    return fail("out_of_range", path, "Expected a value greater than zero.", value);
-  }
-
-  return success(value);
+  return validatePositiveInteger(value, path, value);
 };
 
 export const parseOptionalPositiveInteger = (
@@ -144,7 +148,7 @@ export const parseOptionalPositiveInteger = (
     return success(undefined);
   }
 
-  const parsed: ParseResult<number> = parsePositiveInteger(value, path);
+  const parsed: ParseResult<number> = parsePositiveIntegerFromStringOrNumber(value, path);
   return parsed.ok ? success(parsed.value) : parsed;
 };
 

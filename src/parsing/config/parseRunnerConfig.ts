@@ -11,7 +11,7 @@ import {
   parseOptionalIsoDate,
   parseOptionalPositiveInteger,
   parseOptionalNonEmptyString,
-  parsePositiveInteger,
+  parsePositiveIntegerFromStringOrNumber,
   toBrand,
 } from "../common/parsers";
 
@@ -35,11 +35,14 @@ const convertRunnerConfigShapeToRunnerConfig = (
     input.correlationId,
     "config.correlationId",
   );
-  const timeoutResult: ParseResult<number> = parsePositiveInteger(
+  const timeoutResult: ParseResult<number> = parsePositiveIntegerFromStringOrNumber(
     input.timeoutMs,
     "config.timeoutMs",
   );
-  const pollResult: ParseResult<number> = parsePositiveInteger(input.pollMs, "config.pollMs");
+  const pollResult: ParseResult<number> = parsePositiveIntegerFromStringOrNumber(
+    input.pollMs,
+    "config.pollMs",
+  );
   const limitResult: ParseResult<number | undefined> = parseOptionalPositiveInteger(
     input.limit,
     "config.limit",
