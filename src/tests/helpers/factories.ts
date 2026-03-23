@@ -1,7 +1,7 @@
-import { parseTraceEvent } from "../../parsing/events/parseTraceEvent";
-import { parseFlowDefinition } from "../../parsing/flow/parseFlowDefinition";
-import type { TraceEvent } from "../../models/internal/event";
-import type { FlowDefinition } from "../../models/internal/flow";
+import { parseTraceEvent } from '../../parsing/events/parseTraceEvent';
+import { parseFlowDefinition } from '../../parsing/flow/parseFlowDefinition';
+import type { TraceEvent } from '../../models/internal/event';
+import type { FlowDefinition } from '../../models/internal/flow';
 
 export const createEvent = (input: {
   readonly id: string;
@@ -16,7 +16,7 @@ export const createEvent = (input: {
     id: input.id,
     eventType: input.eventType,
     timestamp: input.timestamp,
-    source: input.source ?? "test-source",
+    source: input.source ?? 'test-source',
     payload: input.payload ?? {},
     ...(input.runId !== undefined ? { runId: input.runId } : {}),
     ...(input.correlationId !== undefined ? { correlationId: input.correlationId } : {}),

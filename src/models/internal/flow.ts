@@ -1,19 +1,19 @@
-import type { EventType, FlowId, RuleId } from "../../core/types/brand";
+import type { EventType, FlowId, RuleId } from '../../core/types/brand';
 
 export interface ExpectedRule {
-  readonly kind: "expected";
+  readonly kind: 'expected';
   readonly id: RuleId;
   readonly eventType: EventType;
 }
 
 export interface ForbiddenRule {
-  readonly kind: "forbidden";
+  readonly kind: 'forbidden';
   readonly id: RuleId;
   readonly eventType: EventType;
 }
 
 export interface OrderRule {
-  readonly kind: "order";
+  readonly kind: 'order';
   readonly id: RuleId;
   readonly beforeEventType: EventType;
   readonly afterEventType: EventType;

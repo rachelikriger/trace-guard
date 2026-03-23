@@ -1,8 +1,8 @@
-import type { FlowId, RunId, CorrelationId } from "../../types/brand";
-import type { TraceEvent } from "../../../models/internal/event";
-import type { RuleEvaluation, RuleViolation } from "./ruleEvaluation";
+import type { FlowId, RunId, CorrelationId } from '../../types/brand';
+import type { TraceEvent } from '../../../models/internal/event';
+import type { RuleEvaluation, RuleViolation } from './ruleEvaluation';
 
-export type ValidationStatus = "pass" | "fail";
+export type ValidationStatus = 'pass' | 'fail';
 
 /** Limits validation and event fetching to a single run and/or correlation chain. */
 export interface EventScope {

@@ -1,13 +1,13 @@
-import type { ValidationReport } from "../../validation/models/validationReport";
+import type { ValidationReport } from '../../validation/models/validationReport';
 
-export type ValidationRunStatus = "pass" | "timeout";
+export type ValidationRunStatus = 'pass' | 'timeout';
 
 export interface ValidationRunIteration {
   readonly iteration: number;
   readonly fetchedEventCount: number;
   readonly uniqueAddedEventCount: number;
   readonly collectedEventCount: number;
-  readonly validationStatus: ValidationReport["status"];
+  readonly validationStatus: ValidationReport['status'];
   readonly violationCount: number;
 }
 

@@ -1,5 +1,5 @@
-import { runCommand } from "./runCommand";
-import { printInputError, printRunResult } from "./printRunResult";
+import { runCommand } from './runCommand';
+import { printInputError, printRunResult } from './printRunResult';
 
 interface RunPaths {
   readonly flowPath: string;
@@ -7,15 +7,9 @@ interface RunPaths {
   readonly eventsPath: string;
 }
 
-const usage = [
-  "Usage:",
-  "  trace-guardrun --flow <flow.json> --config <config.json> --events <events.json>",
-].join("\n");
+const usage = ['Usage:', '  trace-guardrun --flow <flow.json> --config <config.json> --events <events.json>'].join('\n');
 
-const readOptionValue = (
-  args: readonly string[],
-  optionName: "--flow" | "--config" | "--events",
-): string | undefined => {
+const readOptionValue = (args: readonly string[], optionName: '--flow' | '--config' | '--events'): string | undefined => {
   const optionIndex = args.indexOf(optionName);
   if (optionIndex < 0) {
     return undefined;
@@ -25,9 +19,9 @@ const readOptionValue = (
 };
 
 const parseRunPaths = (args: readonly string[]): RunPaths | undefined => {
-  const flowPath = readOptionValue(args, "--flow");
-  const configPath = readOptionValue(args, "--config");
-  const eventsPath = readOptionValue(args, "--events");
+  const flowPath = readOptionValue(args, '--flow');
+  const configPath = readOptionValue(args, '--config');
+  const eventsPath = readOptionValue(args, '--events');
 
   if (flowPath === undefined || configPath === undefined || eventsPath === undefined) {
     return undefined;
@@ -38,7 +32,7 @@ const parseRunPaths = (args: readonly string[]): RunPaths | undefined => {
 
 export const runCli = async (argv: readonly string[]): Promise<number> => {
   const [command, ...rest] = argv;
-  if (command !== "run") {
+  if (command !== 'run') {
     console.error(usage);
     return 2;
   }
@@ -50,7 +44,7 @@ export const runCli = async (argv: readonly string[]): Promise<number> => {
   }
 
   const result = await runCommand(paths);
-  if (result.kind === "input_error") {
+  if (result.kind === 'input_error') {
     printInputError(result.message);
     return result.exitCode;
   }

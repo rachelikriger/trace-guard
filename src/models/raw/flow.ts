@@ -1,19 +1,19 @@
-export type RawRuleKind = "expected" | "forbidden" | "order";
+export type RawRuleKind = 'expected' | 'forbidden' | 'order';
 
 export interface RawExpectedRule {
-  readonly kind: "expected";
+  readonly kind: 'expected';
   readonly id: string;
   readonly eventType: string;
 }
 
 export interface RawForbiddenRule {
-  readonly kind: "forbidden";
+  readonly kind: 'forbidden';
   readonly id: string;
   readonly eventType: string;
 }
 
 export interface RawOrderRule {
-  readonly kind: "order";
+  readonly kind: 'order';
   readonly id: string;
   readonly beforeEventType: string;
   readonly afterEventType: string;

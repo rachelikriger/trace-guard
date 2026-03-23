@@ -1,10 +1,10 @@
-import type { TraceEvent } from "../../models/internal/event";
-import type { FlowDefinition } from "../../models/internal/flow";
-import type { RunnerConfig } from "../../models/internal/runnerConfig";
-import type { EventSource, EventCursor } from "../../sources/eventSource";
-import { validateFlow } from "../validation/validateFlow";
-import type { EventScope } from "../validation/models/validationReport";
-import type { ValidationRunIteration, ValidationRunResult } from "./models/validationRunResult";
+import type { TraceEvent } from '../../models/internal/event';
+import type { FlowDefinition } from '../../models/internal/flow';
+import type { RunnerConfig } from '../../models/internal/runnerConfig';
+import type { EventSource, EventCursor } from '../../sources/eventSource';
+import { validateFlow } from '../validation/validateFlow';
+import type { EventScope } from '../validation/models/validationReport';
+import type { ValidationRunIteration, ValidationRunResult } from './models/validationRunResult';
 
 export interface ValidationRunnerOptions {
   readonly flow: FlowDefinition;
@@ -50,8 +50,7 @@ const getCursorFromEvents = (events: TraceEvent[]): EventCursor | undefined => {
   }
 
   const maxEvent: TraceEvent = events.reduce(
-    (currentMax: TraceEvent, event: TraceEvent): TraceEvent =>
-      compareEventOrder(event, currentMax) > 0 ? event : currentMax,
+    (currentMax: TraceEvent, event: TraceEvent): TraceEvent => (compareEventOrder(event, currentMax) > 0 ? event : currentMax),
     firstEvent,
   );
 
@@ -69,7 +68,7 @@ const buildTimeoutResult = (
   totalUniqueEvents: number,
   finalReport: ReturnType<typeof validateFlow>,
 ): ValidationRunResult => ({
-  status: "timeout",
+  status: 'timeout',
   startedAt,
   endedAt,
   elapsedMs: endedAt.getTime() - startedAt.getTime(),
@@ -87,7 +86,7 @@ const buildPassResult = (
   totalUniqueEvents: number,
   finalReport: ReturnType<typeof validateFlow>,
 ): ValidationRunResult => ({
-  status: "pass",
+  status: 'pass',
   startedAt,
   endedAt,
   elapsedMs: endedAt.getTime() - startedAt.getTime(),
@@ -153,27 +152,13 @@ export const runValidation = async (
       violationCount: report.violations.length,
     });
 
-    if (report.status === "pass") {
-      return buildPassResult(
-        startedAt,
-        dependencies.now(),
-        iterations,
-        totalFetchedEvents,
-        collectedById.size,
-        report,
-      );
+    if (report.status === 'pass') {
+      return buildPassResult(startedAt, dependencies.now(), iterations, totalFetchedEvents, collectedById.size, report);
     }
 
     const nowMs: number = dependencies.now().getTime();
     if (nowMs >= deadlineMs) {
-      return buildTimeoutResult(
-        startedAt,
-        dependencies.now(),
-        iterations,
-        totalFetchedEvents,
-        collectedById.size,
-        report,
-      );
+      return buildTimeoutResult(startedAt, dependencies.now(), iterations, totalFetchedEvents, collectedById.size, report);
     }
 
     iterationNumber += 1;

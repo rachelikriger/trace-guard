@@ -1,10 +1,4 @@
-import type {
-  CorrelationId,
-  EventId,
-  EventType,
-  RunId,
-  SourceName,
-} from "../../core/types/brand";
+import type { CorrelationId, EventId, EventType, RunId, SourceName } from '../../core/types/brand';
 
 export interface TraceEvent {
   readonly id: EventId;

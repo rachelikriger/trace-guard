@@ -1,7 +1,7 @@
-import type { TraceEvent } from "../../../models/internal/event";
-import type { OrderRule } from "../../../models/internal/flow";
-import type { RuleEvaluation, RuleViolation } from "../models/ruleEvaluation";
-import { buildStats } from "./evaluatorUtils";
+import type { TraceEvent } from '../../../models/internal/event';
+import type { OrderRule } from '../../../models/internal/flow';
+import type { RuleEvaluation, RuleViolation } from '../models/ruleEvaluation';
+import { buildStats } from './evaluatorUtils';
 
 const getEarliestEvent = (events: TraceEvent[]): TraceEvent | undefined =>
   events.reduce<TraceEvent | undefined>((earliest, current) => {
@@ -13,19 +13,15 @@ const getEarliestEvent = (events: TraceEvent[]): TraceEvent | undefined =>
   }, undefined);
 
 export const evaluateOrderRule = (rule: OrderRule, events: TraceEvent[]): RuleEvaluation => {
-  const beforeEvents: TraceEvent[] = events.filter(
-    (event: TraceEvent): boolean => event.eventType === rule.beforeEventType,
-  );
-  const afterEvents: TraceEvent[] = events.filter(
-    (event: TraceEvent): boolean => event.eventType === rule.afterEventType,
-  );
+  const beforeEvents: TraceEvent[] = events.filter((event: TraceEvent): boolean => event.eventType === rule.beforeEventType);
+  const afterEvents: TraceEvent[] = events.filter((event: TraceEvent): boolean => event.eventType === rule.afterEventType);
 
   const violations: RuleViolation[] = [];
   if (beforeEvents.length === 0) {
     violations.push({
       ruleId: rule.id,
       kind: rule.kind,
-      code: "order_missing_before",
+      code: 'order_missing_before',
       message: `Order rule requires "${rule.beforeEventType}" before "${rule.afterEventType}", but no "${rule.beforeEventType}" event was found.`,
       evidenceEventIds: afterEvents.map((event: TraceEvent) => event.id),
     });
@@ -35,7 +31,7 @@ export const evaluateOrderRule = (rule: OrderRule, events: TraceEvent[]): RuleEv
     violations.push({
       ruleId: rule.id,
       kind: rule.kind,
-      code: "order_missing_after",
+      code: 'order_missing_after',
       message: `Order rule requires "${rule.beforeEventType}" before "${rule.afterEventType}", but no "${rule.afterEventType}" event was found.`,
       evidenceEventIds: beforeEvents.map((event: TraceEvent) => event.id),
     });
@@ -51,7 +47,7 @@ export const evaluateOrderRule = (rule: OrderRule, events: TraceEvent[]): RuleEv
     violations.push({
       ruleId: rule.id,
       kind: rule.kind,
-      code: "order_incorrect_sequence",
+      code: 'order_incorrect_sequence',
       message: `Expected "${rule.beforeEventType}" to occur before "${rule.afterEventType}".`,
       evidenceEventIds: [earliestBefore.id, earliestAfter.id],
     });

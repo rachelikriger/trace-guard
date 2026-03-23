@@ -1,5 +1,5 @@
-import type { TraceEvent } from "../models/internal/event";
-import type { EventScope } from "../core/validation/models/validationReport";
+import type { TraceEvent } from '../models/internal/event';
+import type { EventScope } from '../core/validation/models/validationReport';
 
 export interface EventCursor {
   readonly timestamp: Date;

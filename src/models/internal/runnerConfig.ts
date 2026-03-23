@@ -1,4 +1,4 @@
-import type { CorrelationId, RunId } from "../../core/types/brand";
+import type { CorrelationId, RunId } from '../../core/types/brand';
 
 export interface RunnerConfig {
   readonly runId?: RunId;

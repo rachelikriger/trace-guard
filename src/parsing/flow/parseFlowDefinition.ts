@@ -1,25 +1,11 @@
-import type { RawFlowDefinition, RawRule } from "../../models/raw/flow";
-import type { ParseIssue } from "../../core/types/parseIssue";
-import type { ParseResult } from "../../core/types/parseResult";
-import type {
-  ExpectedRule,
-  FlowDefinition,
-  ForbiddenRule,
-  OrderRule,
-  Rule,
-} from "../../models/internal/flow";
-import { failure, success } from "../../core/types/result";
-import {
-  asRecord,
-  combineIssues,
-  fail,
-  mustGet,
-  parseNonEmptyString,
-  parsePositiveIntegerFromNumber,
-  toBrand,
-} from "../common/parsers";
+import type { RawFlowDefinition, RawRule } from '../../models/raw/flow';
+import type { ParseIssue } from '../../core/types/parseIssue';
+import type { ParseResult } from '../../core/types/parseResult';
+import type { ExpectedRule, FlowDefinition, ForbiddenRule, OrderRule, Rule } from '../../models/internal/flow';
+import { failure, success } from '../../core/types/result';
+import { asRecord, combineIssues, fail, mustGet, parseNonEmptyString, parsePositiveIntegerFromNumber, toBrand } from '../common/parsers';
 
-type RuleKind = RawRule["kind"];
+type RuleKind = RawRule['kind'];
 
 interface RuleParseContext {
   readonly ruleRecord: Record<string, unknown>;
@@ -29,19 +15,12 @@ interface RuleParseContext {
 
 type RuleParser = (context: RuleParseContext) => ParseResult<RawRule>;
 
-const ruleKinds: readonly RuleKind[] = ["expected", "forbidden", "order"];
+const ruleKinds: readonly RuleKind[] = ['expected', 'forbidden', 'order'];
 
-const isRuleKind = (value: string): value is RuleKind =>
-  ruleKinds.includes(value as RuleKind);
+const isRuleKind = (value: string): value is RuleKind => ruleKinds.includes(value as RuleKind);
 
-const parseRuleWithSingleEventType = (
-  kind: "expected" | "forbidden",
-  context: RuleParseContext,
-): ParseResult<RawRule> => {
-  const eventTypeResult: ParseResult<string> = parseNonEmptyString(
-    context.ruleRecord.eventType,
-    `flow.rules[${context.index}].eventType`,
-  );
+const parseRuleWithSingleEventType = (kind: 'expected' | 'forbidden', context: RuleParseContext): ParseResult<RawRule> => {
+  const eventTypeResult: ParseResult<string> = parseNonEmptyString(context.ruleRecord.eventType, `flow.rules[${context.index}].eventType`);
   if (!eventTypeResult.ok) {
     return eventTypeResult;
   }
@@ -69,7 +48,7 @@ const parseOrderRule = (context: RuleParseContext): ParseResult<RawRule> => {
   }
 
   return success({
-    kind: "order",
+    kind: 'order',
     id: context.id,
     beforeEventType: mustGet(beforeResult),
     afterEventType: mustGet(afterResult),
@@ -77,10 +56,8 @@ const parseOrderRule = (context: RuleParseContext): ParseResult<RawRule> => {
 };
 
 const ruleParsers = {
-  expected: (context: RuleParseContext): ParseResult<RawRule> =>
-    parseRuleWithSingleEventType("expected", context),
-  forbidden: (context: RuleParseContext): ParseResult<RawRule> =>
-    parseRuleWithSingleEventType("forbidden", context),
+  expected: (context: RuleParseContext): ParseResult<RawRule> => parseRuleWithSingleEventType('expected', context),
+  forbidden: (context: RuleParseContext): ParseResult<RawRule> => parseRuleWithSingleEventType('forbidden', context),
   order: (context: RuleParseContext): ParseResult<RawRule> => parseOrderRule(context),
 } satisfies Record<RuleKind, RuleParser>;
 
@@ -102,39 +79,29 @@ const parseRawRule = (input: unknown, index: number): ParseResult<RawRule> => {
   const kind: string = mustGet(kindResult);
   const id: string = mustGet(idResult);
   if (!isRuleKind(kind)) {
-    return fail(
-      "invalid_literal",
-      `flow.rules[${index}].kind`,
-      "Rule kind must be one of: expected, forbidden, order.",
-      kind,
-    );
+    return fail('invalid_literal', `flow.rules[${index}].kind`, 'Rule kind must be one of: expected, forbidden, order.', kind);
   }
 
   return ruleParsers[kind]({ ruleRecord, index, id });
 };
 
 const parseRawFlowDefinition = (input: unknown): ParseResult<RawFlowDefinition> => {
-  const recordResult: ParseResult<Record<string, unknown>> = asRecord(input, "flow");
+  const recordResult: ParseResult<Record<string, unknown>> = asRecord(input, 'flow');
   if (!recordResult.ok) {
     return recordResult;
   }
 
   const flowRecord: Record<string, unknown> = recordResult.value;
-  const flowIdResult: ParseResult<string> = parseNonEmptyString(flowRecord.flowId, "flow.flowId");
-  const versionResult: ParseResult<number> = parsePositiveIntegerFromNumber(
-    flowRecord.version,
-    "flow.version",
-  );
+  const flowIdResult: ParseResult<string> = parseNonEmptyString(flowRecord.flowId, 'flow.flowId');
+  const versionResult: ParseResult<number> = parsePositiveIntegerFromNumber(flowRecord.version, 'flow.version');
 
   const descriptionField: unknown = flowRecord.description;
   const descriptionResult: ParseResult<string | undefined> =
-    descriptionField === undefined
-      ? success(undefined)
-      : parseNonEmptyString(descriptionField, "flow.description");
+    descriptionField === undefined ? success(undefined) : parseNonEmptyString(descriptionField, 'flow.description');
 
   const rulesField: unknown = flowRecord.rules;
   if (!Array.isArray(rulesField)) {
-    return fail("invalid_type", "flow.rules", "Expected an array of rules.", rulesField);
+    return fail('invalid_type', 'flow.rules', 'Expected an array of rules.', rulesField);
   }
 
   const parsedRules: RawRule[] = [];
@@ -149,11 +116,7 @@ const parseRawFlowDefinition = (input: unknown): ParseResult<RawFlowDefinition> 
     ruleIssues.push(...parsedRule.error);
   });
 
-  const topLevelIssues: ParseIssue[] = combineIssues(
-    flowIdResult,
-    versionResult,
-    descriptionResult,
-  );
+  const topLevelIssues: ParseIssue[] = combineIssues(flowIdResult, versionResult, descriptionResult);
   const issues: ParseIssue[] = [...topLevelIssues, ...ruleIssues];
   if (issues.length > 0) {
     return failure(issues);
@@ -172,40 +135,38 @@ const parseRawFlowDefinition = (input: unknown): ParseResult<RawFlowDefinition> 
 };
 
 const normalizeRawRule = (rawRule: RawRule): Rule => {
-  const ruleId = toBrand<"RuleId">(rawRule.id);
+  const ruleId = toBrand<'RuleId'>(rawRule.id);
 
-  if (rawRule.kind === "expected") {
+  if (rawRule.kind === 'expected') {
     const rule: ExpectedRule = {
-      kind: "expected",
+      kind: 'expected',
       id: ruleId,
-      eventType: toBrand<"EventType">(rawRule.eventType),
+      eventType: toBrand<'EventType'>(rawRule.eventType),
     };
     return rule;
   }
 
-  if (rawRule.kind === "forbidden") {
+  if (rawRule.kind === 'forbidden') {
     const rule: ForbiddenRule = {
-      kind: "forbidden",
+      kind: 'forbidden',
       id: ruleId,
-      eventType: toBrand<"EventType">(rawRule.eventType),
+      eventType: toBrand<'EventType'>(rawRule.eventType),
     };
     return rule;
   }
 
   const rule: OrderRule = {
-    kind: "order",
+    kind: 'order',
     id: ruleId,
-    beforeEventType: toBrand<"EventType">(rawRule.beforeEventType),
-    afterEventType: toBrand<"EventType">(rawRule.afterEventType),
+    beforeEventType: toBrand<'EventType'>(rawRule.beforeEventType),
+    afterEventType: toBrand<'EventType'>(rawRule.afterEventType),
   };
   return rule;
 };
 
-export const convertRawFlowDefinitionToFlowDefinition = (
-  rawFlow: RawFlowDefinition,
-): ParseResult<FlowDefinition> => {
+export const convertRawFlowDefinitionToFlowDefinition = (rawFlow: RawFlowDefinition): ParseResult<FlowDefinition> => {
   const flow: FlowDefinition = {
-    flowId: toBrand<"FlowId">(rawFlow.flowId),
+    flowId: toBrand<'FlowId'>(rawFlow.flowId),
     version: rawFlow.version,
     rules: rawFlow.rules.map((rule: RawRule): Rule => normalizeRawRule(rule)),
     ...(rawFlow.description !== undefined ? { description: rawFlow.description } : {}),

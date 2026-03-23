@@ -1,13 +1,13 @@
-import { readFile } from "node:fs/promises";
-import { parseFlowDefinition } from "../parsing/flow/parseFlowDefinition";
-import { parseRunnerConfigInput } from "../parsing/config/parseRunnerConfig";
-import { parseTraceEvent } from "../parsing/events/parseTraceEvent";
-import { runValidation } from "../core/runner/validationRunner";
-import type { ValidationRunResult } from "../core/runner/models/validationRunResult";
-import type { EventScope } from "../core/validation/models/validationReport";
-import type { ParseIssue } from "../core/types/parseIssue";
-import type { TraceEvent } from "../models/internal/event";
-import { FileEventSource } from "../sources/file/fileEventSource";
+import { readFile } from 'node:fs/promises';
+import { parseFlowDefinition } from '../parsing/flow/parseFlowDefinition';
+import { parseRunnerConfigInput } from '../parsing/config/parseRunnerConfig';
+import { parseTraceEvent } from '../parsing/events/parseTraceEvent';
+import { runValidation } from '../core/runner/validationRunner';
+import type { ValidationRunResult } from '../core/runner/models/validationRunResult';
+import type { EventScope } from '../core/validation/models/validationReport';
+import type { ParseIssue } from '../core/types/parseIssue';
+import type { TraceEvent } from '../models/internal/event';
+import { FileEventSource } from '../sources/file/fileEventSource';
 
 export interface RunCommandInput {
   readonly flowPath: string;
@@ -16,13 +16,13 @@ export interface RunCommandInput {
 }
 
 export interface RunCommandCompletedResult {
-  readonly kind: "run_completed";
+  readonly kind: 'run_completed';
   readonly exitCode: 0 | 1;
   readonly runResult: ValidationRunResult;
 }
 
 export interface RunCommandInputErrorResult {
-  readonly kind: "input_error";
+  readonly kind: 'input_error';
   readonly exitCode: 2;
   readonly message: string;
 }
@@ -30,18 +30,16 @@ export interface RunCommandInputErrorResult {
 export type RunCommandResult = RunCommandCompletedResult | RunCommandInputErrorResult;
 
 const formatParseIssues = (issues: ParseIssue[]): string =>
-  issues
-    .map((issue: ParseIssue): string => `- [${issue.code}] ${issue.path}: ${issue.message}`)
-    .join("\n");
+  issues.map((issue: ParseIssue): string => `- [${issue.code}] ${issue.path}: ${issue.message}`).join('\n');
 
 const readJsonFile = async (path: string): Promise<unknown> => {
-  const raw = await readFile(path, "utf8");
+  const raw = await readFile(path, 'utf8');
   return JSON.parse(raw) as unknown;
 };
 
 const parseEventsArray = (eventsInput: unknown): { ok: true; value: TraceEvent[] } | { ok: false; message: string } => {
   if (!Array.isArray(eventsInput)) {
-    return { ok: false, message: "Events file must contain a JSON array." };
+    return { ok: false, message: 'Events file must contain a JSON array.' };
   }
 
   const events: TraceEvent[] = [];
@@ -60,7 +58,7 @@ const parseEventsArray = (eventsInput: unknown): { ok: true; value: TraceEvent[]
   if (parseErrors.length > 0) {
     return {
       ok: false,
-      message: `Failed to parse events file.\n${parseErrors.join("\n")}`,
+      message: `Failed to parse events file.\n${parseErrors.join('\n')}`,
     };
   }
 
@@ -81,7 +79,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return {
-      kind: "input_error",
+      kind: 'input_error',
       exitCode: 2,
       message: `Failed to read input files: ${errorMessage}`,
     };
@@ -90,7 +88,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
   const flowResult = parseFlowDefinition(flowJson);
   if (!flowResult.ok) {
     return {
-      kind: "input_error",
+      kind: 'input_error',
       exitCode: 2,
       message: `Flow parsing failed.\n${formatParseIssues(flowResult.error)}`,
     };
@@ -99,7 +97,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
   const configResult = parseRunnerConfigInput(configJson);
   if (!configResult.ok) {
     return {
-      kind: "input_error",
+      kind: 'input_error',
       exitCode: 2,
       message: `Config parsing failed.\n${formatParseIssues(configResult.error)}`,
     };
@@ -108,7 +106,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
   const eventsResult = parseEventsArray(eventsJson);
   if (!eventsResult.ok) {
     return {
-      kind: "input_error",
+      kind: 'input_error',
       exitCode: 2,
       message: eventsResult.message,
     };
@@ -118,9 +116,7 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
     configResult.value.runId !== undefined || configResult.value.correlationId !== undefined
       ? {
           ...(configResult.value.runId !== undefined ? { runId: configResult.value.runId } : {}),
-          ...(configResult.value.correlationId !== undefined
-            ? { correlationId: configResult.value.correlationId }
-            : {}),
+          ...(configResult.value.correlationId !== undefined ? { correlationId: configResult.value.correlationId } : {}),
         }
       : undefined;
 
@@ -133,8 +129,8 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
   });
 
   return {
-    kind: "run_completed",
-    exitCode: runResult.status === "pass" ? 0 : 1,
+    kind: 'run_completed',
+    exitCode: runResult.status === 'pass' ? 0 : 1,
     runResult,
   };
 };

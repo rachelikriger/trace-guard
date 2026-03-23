@@ -1,8 +1,8 @@
-import type { TraceEvent } from "../../models/internal/event";
-import { filterEventsByScope } from "../../core/validation/models/validationReport";
-import type { EventSource, EventSourcePollRequest, EventSourcePollResponse } from "../eventSource";
+import type { TraceEvent } from '../../models/internal/event';
+import { filterEventsByScope } from '../../core/validation/models/validationReport';
+import type { EventSource, EventSourcePollRequest, EventSourcePollResponse } from '../eventSource';
 
-const isAfterCursor = (event: TraceEvent, cursor: EventSourcePollRequest["cursor"]): boolean => {
+const isAfterCursor = (event: TraceEvent, cursor: EventSourcePollRequest['cursor']): boolean => {
   if (cursor === undefined) {
     return true;
   }
