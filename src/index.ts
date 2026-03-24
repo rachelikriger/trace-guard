@@ -9,7 +9,7 @@ export type { RunnerConfig } from './models/internal/runnerConfig';
 export type { RuleEvaluation, RuleEvaluationStats, RuleViolation, RuleViolationCode } from './core/validation/models/ruleEvaluation';
 export type { EventScope, ValidationReport, ValidationStatus } from './core/validation/models/validationReport';
 export { filterEventsByScope, matchesEventScope } from './core/validation/models/validationReport';
-export type { EventId, FlowId, RuleId, RunId, CorrelationId, EventType, SourceName } from './core/types/brand';
+export type { EventId, FlowId, RuleId, RunId, CorrelationId, EventType } from './core/types/brand';
 export type { ParseResult } from './core/types/parseResult';
 export type { Result } from './core/types/result';
 export type { ValidationRunIteration, ValidationRunResult, ValidationRunStatus } from './core/runner/models/validationRunResult';

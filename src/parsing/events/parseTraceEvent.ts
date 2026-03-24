@@ -75,7 +75,7 @@ export const convertRawTraceEventToTraceEvent = (raw: RawTraceEvent): ParseResul
     id: toBrand<'EventId'>(raw.id),
     eventType: toBrand<'EventType'>(raw.eventType),
     timestamp,
-    source: toBrand<'SourceName'>(raw.source),
+    source: raw.source,
     payload: raw.payload,
     ...(runId !== undefined ? { runId } : {}),
     ...(correlationId !== undefined ? { correlationId } : {}),

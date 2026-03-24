@@ -22,3 +22,9 @@ CLI (src/cli/index.ts)
 - [Current Project Status](docs/STATUS.md)
 - [Implementation Roadmap](docs/ROADMAP.md)
 - [Design Notes (Future Decisions)](docs/DESIGN_NOTES.md)
+
+## Type Branding Policy
+
+Branded types in this project are compile-time only (no runtime validation by themselves).
+They are reserved for identifiers that are easy to mix up, such as `EventId`, `FlowId`, `RuleId`, `RunId`, and `CorrelationId`.
+Regular descriptive fields (for example `source`) should remain plain `string` values unless there is a clear confusion risk.
