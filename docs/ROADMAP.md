@@ -21,16 +21,22 @@ Still out of scope:
 - real Elastic integration
 - final CLI UX polish
 
-## Phase 4: CLI Integration (Next)
+## Phase 4: CLI Integration (Baseline Completed)
 
 Goal: expose a practical command interface for running validations.
 
-Planned scope:
+Completed baseline scope:
 
-- CLI entrypoint and argument parsing
-- flow/config loading from files/flags
-- invoke runner and print clear output
-- stable exit codes for CI usage
+- CLI entrypoint and argument parsing for `run`
+- flow/config/events loading from files
+- runner invocation and human-readable output
+- stable exit codes for pass/fail/input error paths
+
+Remaining polish:
+
+- richer CLI help and ergonomics
+- machine-friendly output mode (JSON)
+- dedicated CLI integration tests
 
 ## Phase 5: External Source Adapters
 

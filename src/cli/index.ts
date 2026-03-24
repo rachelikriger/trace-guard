@@ -7,7 +7,7 @@ interface RunPaths {
   readonly eventsPath: string;
 }
 
-const usage = ['Usage:', '  trace-guardrun --flow <flow.json> --config <config.json> --events <events.json>'].join('\n');
+const usage = ['Usage:', '  trace-guard run --flow <flow.json> --config <config.json> --events <events.json>'].join('\n');
 
 const readOptionValue = (args: readonly string[], optionName: '--flow' | '--config' | '--events'): string | undefined => {
   const optionIndex = args.indexOf(optionName);

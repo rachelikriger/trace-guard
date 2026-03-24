@@ -69,10 +69,11 @@ Implemented:
 - model boundaries (raw/internal)
 - parsing/conversion pipeline
 - validation engine and report model
-- tests for rule evaluators and flow aggregation
+- runner/polling orchestration with `EventSource` and timeout/pass semantics
+- CLI command surface (`run`) with file-based inputs and stable exit codes
+- tests for rule evaluators, flow aggregation, and runner behavior
 
 Not implemented yet:
 
-- runner/polling orchestration
-- CLI command surface
 - concrete external source adapters (Elastic, etc.)
+- advanced reporting modes and CLI UX polish

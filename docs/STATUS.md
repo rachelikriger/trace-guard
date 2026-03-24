@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-Status: After Phase 3 runner implementation, before full CLI integration and external adapters.
+Status: After Phase 4 baseline CLI integration, before external adapters and CLI/reporting polish.
 
 ## Completed
 
@@ -54,7 +54,7 @@ Status: After Phase 3 runner implementation, before full CLI integration and ext
 
 ## Open Work (High-Level)
 
-- CLI orchestration and reporting UX
+- CLI/reporting UX polish (machine-friendly output mode, improved help/usage, integration tests)
 - external adapters (Elastic) later, without changing core validation logic
 
 ## Quality Gates
