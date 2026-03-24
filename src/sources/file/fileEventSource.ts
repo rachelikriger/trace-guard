@@ -1,5 +1,6 @@
 import type { TraceEvent } from '../../models/internal/event';
 import { filterEventsByScope } from '../../core/validation/models/validationReport';
+import { compareTraceEventToCursor } from '../../core/events/compareTraceEvents';
 import type { EventSource, EventSourcePollRequest, EventSourcePollResponse } from '../eventSource';
 
 const isAfterCursor = (event: TraceEvent, cursor: EventSourcePollRequest['cursor']): boolean => {
@@ -7,17 +8,7 @@ const isAfterCursor = (event: TraceEvent, cursor: EventSourcePollRequest['cursor
     return true;
   }
 
-  const eventTime = event.timestamp.getTime();
-  const cursorTime = cursor.timestamp.getTime();
-  if (eventTime > cursorTime) {
-    return true;
-  }
-
-  if (eventTime < cursorTime) {
-    return false;
-  }
-
-  return event.id > cursor.eventId;
+  return compareTraceEventToCursor(event, cursor.timestamp, cursor.eventId) > 0;
 };
 
 export class FileEventSource implements EventSource {

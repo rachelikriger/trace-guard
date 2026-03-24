@@ -2,6 +2,7 @@ import type { TraceEvent } from '../../../models/internal/event';
 import type { OrderRule } from '../../../models/internal/flow';
 import type { RuleEvaluation, RuleViolation } from '../models/ruleEvaluation';
 import { buildStats } from './evaluatorUtils';
+import { compareTraceEvents } from '../../events/compareTraceEvents';
 
 const getEarliestEvent = (events: TraceEvent[]): TraceEvent | undefined =>
   events.reduce<TraceEvent | undefined>((earliest, current) => {
@@ -9,7 +10,7 @@ const getEarliestEvent = (events: TraceEvent[]): TraceEvent | undefined =>
       return current;
     }
 
-    return current.timestamp.getTime() < earliest.timestamp.getTime() ? current : earliest;
+    return compareTraceEvents(current, earliest) < 0 ? current : earliest;
   }, undefined);
 
 export const evaluateOrderRule = (rule: OrderRule, events: TraceEvent[]): RuleEvaluation => {
@@ -42,7 +43,7 @@ export const evaluateOrderRule = (rule: OrderRule, events: TraceEvent[]): RuleEv
   if (
     earliestBefore !== undefined &&
     earliestAfter !== undefined &&
-    earliestBefore.timestamp.getTime() > earliestAfter.timestamp.getTime()
+    compareTraceEvents(earliestBefore, earliestAfter) > 0
   ) {
     violations.push({
       ruleId: rule.id,

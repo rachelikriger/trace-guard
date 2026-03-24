@@ -1,7 +1,8 @@
 import type { TraceEvent } from '../../models/internal/event';
 import type { FlowDefinition } from '../../models/internal/flow';
 import type { RunnerConfig } from '../../models/internal/runnerConfig';
-import type { EventSource, EventCursor } from '../../sources/eventSource';
+import type { EventSource, EventCursor, EventSourcePollRequest } from '../../sources/eventSource';
+import { compareTraceEvents } from '../events/compareTraceEvents';
 import { validateFlow } from '../validation/validateFlow';
 import type { EventScope } from '../validation/models/validationReport';
 import type { ValidationRunIteration, ValidationRunResult } from './models/validationRunResult';
@@ -18,22 +19,13 @@ interface RunnerDependencies {
   readonly sleep: (ms: number) => Promise<void>;
 }
 
-interface PollRequestOptions {
-  readonly iteration: number;
-  readonly now: Date;
-  readonly eventScope?: EventScope;
-  readonly since?: Date;
-  readonly cursor?: EventCursor;
-  readonly limit?: number;
-}
-
-interface PollRequestInput {
-  readonly iteration: number;
-  readonly now: Date;
-  readonly eventScope: EventScope | undefined;
-  readonly since: Date | undefined;
-  readonly cursor: EventCursor | undefined;
-  readonly limit: number | undefined;
+interface MutablePollRequest {
+  iteration: number;
+  now: Date;
+  eventScope?: EventScope;
+  since?: Date;
+  cursor?: EventCursor;
+  limit?: number;
 }
 
 const defaultDependencies: RunnerDependencies = {
@@ -42,19 +34,6 @@ const defaultDependencies: RunnerDependencies = {
     new Promise<void>((resolve) => {
       setTimeout(resolve, ms);
     }),
-};
-
-const compareEventOrder = (a: TraceEvent, b: TraceEvent): number => {
-  const timeDiff: number = a.timestamp.getTime() - b.timestamp.getTime();
-  if (timeDiff !== 0) {
-    return timeDiff;
-  }
-
-  if (a.id === b.id) {
-    return 0;
-  }
-
-  return a.id > b.id ? 1 : -1;
 };
 
 const getCursorFromEvents = (events: TraceEvent[]): EventCursor | undefined => {
@@ -68,7 +47,7 @@ const getCursorFromEvents = (events: TraceEvent[]): EventCursor | undefined => {
   }
 
   const maxEvent: TraceEvent = events.reduce(
-    (currentMax: TraceEvent, event: TraceEvent): TraceEvent => (compareEventOrder(event, currentMax) > 0 ? event : currentMax),
+    (currentMax: TraceEvent, event: TraceEvent): TraceEvent => (compareTraceEvents(event, currentMax) > 0 ? event : currentMax),
     firstEvent,
   );
 
@@ -114,14 +93,32 @@ const buildPassResult = (
   finalReport,
 });
 
-const buildPollRequest = (input: PollRequestInput): PollRequestOptions => ({
-  iteration: input.iteration,
-  now: input.now,
-  ...(input.eventScope !== undefined ? { eventScope: input.eventScope } : {}),
-  ...(input.since !== undefined ? { since: input.since } : {}),
-  ...(input.cursor !== undefined ? { cursor: input.cursor } : {}),
-  ...(input.limit !== undefined ? { limit: input.limit } : {}),
-});
+const createPollRequest = (
+  iteration: number,
+  now: Date,
+  options: ValidationRunnerOptions,
+  cursor: EventCursor | undefined,
+): EventSourcePollRequest => {
+  const request: MutablePollRequest = {
+    iteration,
+    now,
+  };
+
+  if (options.eventScope !== undefined) {
+    request.eventScope = options.eventScope;
+  }
+  if (options.config.since !== undefined) {
+    request.since = options.config.since;
+  }
+  if (cursor !== undefined) {
+    request.cursor = cursor;
+  }
+  if (options.config.limit !== undefined) {
+    request.limit = options.config.limit;
+  }
+
+  return request;
+};
 
 export const runValidation = async (
   options: ValidationRunnerOptions,
@@ -137,14 +134,8 @@ export const runValidation = async (
   let iterationNumber = 1;
 
   for (;;) {
-    const pollRequest = buildPollRequest({
-      iteration: iterationNumber,
-      now: dependencies.now(),
-      eventScope: options.eventScope,
-      since: options.config.since,
-      cursor,
-      limit: options.config.limit,
-    });
+    const loopNow: Date = dependencies.now();
+    const pollRequest: EventSourcePollRequest = createPollRequest(iterationNumber, loopNow, options, cursor);
 
     const pollResponse = await options.source.poll(pollRequest);
 
@@ -178,12 +169,12 @@ export const runValidation = async (
     });
 
     if (report.status === 'pass') {
-      return buildPassResult(startedAt, dependencies.now(), iterations, totalFetchedEvents, collectedById.size, report);
+      return buildPassResult(startedAt, loopNow, iterations, totalFetchedEvents, collectedById.size, report);
     }
 
-    const nowMs: number = dependencies.now().getTime();
+    const nowMs: number = loopNow.getTime();
     if (nowMs >= deadlineMs) {
-      return buildTimeoutResult(startedAt, dependencies.now(), iterations, totalFetchedEvents, collectedById.size, report);
+      return buildTimeoutResult(startedAt, loopNow, iterations, totalFetchedEvents, collectedById.size, report);
     }
 
     iterationNumber += 1;
