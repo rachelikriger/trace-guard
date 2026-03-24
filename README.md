@@ -23,6 +23,31 @@ CLI (src/cli/index.ts)
 - [Implementation Roadmap](docs/ROADMAP.md)
 - [Design Notes (Future Decisions)](docs/DESIGN_NOTES.md)
 
+## CLI Contract
+
+Command:
+
+- `trace-guard run --flow <flow.json> --config <config.json> --events <events.json> [--output <human|json>]`
+
+Exit codes:
+
+- `0`: validation passed
+- `1`: validation run completed but rules did not pass before timeout
+- `2`: CLI/input error (invalid args, file read failure, or parsing error)
+
+JSON output example (`--output json`):
+
+```json
+{
+  "kind": "run_completed",
+  "exitCode": 0,
+  "runResult": {
+    "status": "pass",
+    "elapsedMs": 38
+  }
+}
+```
+
 ## Import Guide
 
 Preferred entrypoints for library usage:
