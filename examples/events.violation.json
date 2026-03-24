@@ -1,0 +1,10 @@
+[
+  {
+    "id": "event-violation-1",
+    "eventType": "PAYMENT_FAILED",
+    "timestamp": "2026-03-12T15:00:00.000Z",
+    "source": "demo-source",
+    "payload": {},
+    "runId": "run-violation"
+  }
+]

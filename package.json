@@ -1,0 +1,25 @@
+{
+  "name": "trace-guard",
+  "version": "0.1.0",
+  "description": "Trace-Guard foundation for flow and event validation.",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run build && node --test dist/tests/runCoreTests.test.js",
+    "demo:runner": "npm run build && node dist/examples/runMockRunnerDemo.js",
+    "cli": "npm run build && node dist/cli/index.js",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.2"
+  }
+}
