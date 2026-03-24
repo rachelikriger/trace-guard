@@ -23,6 +23,17 @@ CLI (src/cli/index.ts)
 - [Implementation Roadmap](docs/ROADMAP.md)
 - [Design Notes (Future Decisions)](docs/DESIGN_NOTES.md)
 
+## Import Guide
+
+Preferred entrypoints for library usage:
+
+- `trace-guard/public` - stable, high-level API for most consumers
+- `trace-guard/parsing` - parsing-only API (`parseTraceEvent`, `parseFlowDefinition`, `parseRunnerConfig`)
+- `trace-guard/validation` - validation-focused API (`validateFlow`, `runValidation`, report models)
+
+`trace-guard` (root `src/index.ts`) is kept as a broad legacy barrel for backward compatibility.
+For new code, prefer the focused entrypoints above.
+
 ## Type Branding Policy
 
 Branded types in this project are compile-time only (no runtime validation by themselves).

@@ -18,6 +18,24 @@ interface RunnerDependencies {
   readonly sleep: (ms: number) => Promise<void>;
 }
 
+interface PollRequestOptions {
+  readonly iteration: number;
+  readonly now: Date;
+  readonly eventScope?: EventScope;
+  readonly since?: Date;
+  readonly cursor?: EventCursor;
+  readonly limit?: number;
+}
+
+interface PollRequestInput {
+  readonly iteration: number;
+  readonly now: Date;
+  readonly eventScope: EventScope | undefined;
+  readonly since: Date | undefined;
+  readonly cursor: EventCursor | undefined;
+  readonly limit: number | undefined;
+}
+
 const defaultDependencies: RunnerDependencies = {
   now: () => new Date(),
   sleep: (ms: number): Promise<void> =>
@@ -96,6 +114,15 @@ const buildPassResult = (
   finalReport,
 });
 
+const buildPollRequest = (input: PollRequestInput): PollRequestOptions => ({
+  iteration: input.iteration,
+  now: input.now,
+  ...(input.eventScope !== undefined ? { eventScope: input.eventScope } : {}),
+  ...(input.since !== undefined ? { since: input.since } : {}),
+  ...(input.cursor !== undefined ? { cursor: input.cursor } : {}),
+  ...(input.limit !== undefined ? { limit: input.limit } : {}),
+});
+
 export const runValidation = async (
   options: ValidationRunnerOptions,
   dependencies: RunnerDependencies = defaultDependencies,
@@ -110,18 +137,16 @@ export const runValidation = async (
   let iterationNumber = 1;
 
   for (;;) {
-    const pollRequest = {
+    const pollRequest = buildPollRequest({
       iteration: iterationNumber,
       now: dependencies.now(),
-      ...(options.eventScope !== undefined ? { eventScope: options.eventScope } : {}),
-      ...(options.config.since !== undefined ? { since: options.config.since } : {}),
-      ...(cursor !== undefined ? { cursor } : {}),
-      ...(options.config.limit !== undefined ? { limit: options.config.limit } : {}),
-    };
-
-    const pollResponse = await options.source.poll({
-      ...pollRequest,
+      eventScope: options.eventScope,
+      since: options.config.since,
+      cursor,
+      limit: options.config.limit,
     });
+
+    const pollResponse = await options.source.poll(pollRequest);
 
     const fetchedEvents: TraceEvent[] = pollResponse.events;
     totalFetchedEvents += fetchedEvents.length;

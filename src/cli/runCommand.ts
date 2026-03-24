@@ -7,6 +7,7 @@ import type { ValidationRunResult } from '../core/runner/models/validationRunRes
 import type { EventScope } from '../core/validation/models/validationReport';
 import type { ParseIssue } from '../core/types/parseIssue';
 import type { TraceEvent } from '../models/internal/event';
+import type { RunnerConfig } from '../models/internal/runnerConfig';
 import { FileEventSource } from '../sources/file/fileEventSource';
 
 export interface RunCommandInput {
@@ -65,6 +66,17 @@ const parseEventsArray = (eventsInput: unknown): { ok: true; value: TraceEvent[]
   return { ok: true, value: events };
 };
 
+const eventScopeFromConfig = (config: RunnerConfig): EventScope | undefined => {
+  if (config.runId === undefined && config.correlationId === undefined) {
+    return undefined;
+  }
+
+  return {
+    ...(config.runId !== undefined ? { runId: config.runId } : {}),
+    ...(config.correlationId !== undefined ? { correlationId: config.correlationId } : {}),
+  };
+};
+
 export const runCommand = async (input: RunCommandInput): Promise<RunCommandResult> => {
   let flowJson: unknown;
   let configJson: unknown;
@@ -112,21 +124,23 @@ export const runCommand = async (input: RunCommandInput): Promise<RunCommandResu
     };
   }
 
-  const eventScope: EventScope | undefined =
-    configResult.value.runId !== undefined || configResult.value.correlationId !== undefined
-      ? {
-          ...(configResult.value.runId !== undefined ? { runId: configResult.value.runId } : {}),
-          ...(configResult.value.correlationId !== undefined ? { correlationId: configResult.value.correlationId } : {}),
-        }
-      : undefined;
+  const eventScope = eventScopeFromConfig(configResult.value);
 
   const source = new FileEventSource(eventsResult.value);
-  const runResult = await runValidation({
-    flow: flowResult.value,
-    config: configResult.value,
-    source,
-    ...(eventScope !== undefined ? { eventScope } : {}),
-  });
+  const runOptions =
+    eventScope === undefined
+      ? {
+          flow: flowResult.value,
+          config: configResult.value,
+          source,
+        }
+      : {
+          flow: flowResult.value,
+          config: configResult.value,
+          source,
+          eventScope,
+        };
+  const runResult = await runValidation(runOptions);
 
   return {
     kind: 'run_completed',

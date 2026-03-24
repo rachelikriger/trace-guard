@@ -1,3 +1,13 @@
+/**
+ * Legacy broad entrypoint (kept for backward compatibility).
+ *
+ * Recommended entrypoints for library consumers:
+ * - trace-guard/public      -> stable, high-level API
+ * - trace-guard/parsing     -> parsing-only API
+ * - trace-guard/validation  -> validation-only API
+ *
+ * If you are starting a new integration, prefer one of the entrypoints above.
+ */
 export type { RawTraceEvent } from './models/raw/event';
 export type { RawFlowDefinition, RawRule } from './models/raw/flow';
 export type { RawRunnerConfig } from './models/raw/runnerConfig';
