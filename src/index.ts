@@ -24,6 +24,9 @@ export type { ParseResult } from './core/types/parseResult';
 export type { Result } from './core/types/result';
 export type { ValidationRunIteration, ValidationRunResult, ValidationRunStatus } from './core/runner/models/validationRunResult';
 export type { EventCursor, EventSource, EventSourcePollRequest, EventSourcePollResponse } from './sources/eventSource';
+export type { ElasticClient, ElasticSearchRequest, ElasticSearchResponse, ElasticSearchHit } from './sources/elastic/elasticClient';
+export type { ElasticFieldConfig, ElasticEventSourceConfig } from './sources/elastic/elasticEventSource';
+export type { ElasticHttpClientOptions } from './sources/elastic/elasticHttpClient';
 
 export { failure, success } from './core/types/result';
 
@@ -33,3 +36,5 @@ export { convertRawRunnerConfigToRunnerConfig, parseRunnerConfig, parseRunnerCon
 export { validateFlow } from './core/validation/validateFlow';
 export { runValidation } from './core/runner/validationRunner';
 export { MockEventSource } from './sources/mock/mockEventSource';
+export { ElasticEventSource } from './sources/elastic/elasticEventSource';
+export { ElasticHttpClient } from './sources/elastic/elasticHttpClient';

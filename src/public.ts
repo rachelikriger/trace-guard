@@ -16,9 +16,15 @@ export type { RunnerConfig } from './models/internal/runnerConfig';
 export type { ParseResult } from './core/types/parseResult';
 export type { Result } from './core/types/result';
 export type { EventId, FlowId, RuleId, RunId, CorrelationId, EventType } from './core/types/brand';
+export type { EventCursor, EventSource, EventSourcePollRequest, EventSourcePollResponse } from './sources/eventSource';
+export type { ElasticClient, ElasticSearchRequest, ElasticSearchResponse, ElasticSearchHit } from './sources/elastic/elasticClient';
+export type { ElasticFieldConfig, ElasticEventSourceConfig } from './sources/elastic/elasticEventSource';
+export type { ElasticHttpClientOptions } from './sources/elastic/elasticHttpClient';
 
 export { failure, success } from './core/types/result';
 export { convertRawTraceEventToTraceEvent, parseTraceEvent } from './parsing/events/parseTraceEvent';
 export { convertRawFlowDefinitionToFlowDefinition, parseFlowDefinition } from './parsing/flow/parseFlowDefinition';
 export { convertRawRunnerConfigToRunnerConfig, parseRunnerConfig, parseRunnerConfigInput } from './parsing/config/parseRunnerConfig';
 export { runValidation } from './core/runner/validationRunner';
+export { ElasticEventSource } from './sources/elastic/elasticEventSource';
+export { ElasticHttpClient } from './sources/elastic/elasticHttpClient';
