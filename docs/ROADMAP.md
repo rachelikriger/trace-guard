@@ -38,15 +38,17 @@ Remaining polish:
 - machine-friendly output mode (JSON)
 - dedicated CLI integration tests
 
-## Phase 5: External Source Adapters
+## Phase 5: External Source Adapters (Completed)
 
 Goal: integrate real data sources without changing core logic.
 
-Planned scope:
+Completed scope:
 
-- Elastic adapter implementing `EventSource`
-- adapter parsing/mapping tests
-- optional pagination/query configuration
+- Elastic adapter implementing `EventSource` (`ElasticEventSource`)
+- thin Elastic client contract and HTTP implementation (`ElasticClient`, `ElasticHttpClient`)
+- isolated hit-to-`TraceEvent` parsing via existing event parser
+- adapter-focused tests for query building, cursor semantics, and mapping failures
+- basic query configuration (index, limit, scope/since filters)
 
 ## Phase 6: Reporting and Operability
 

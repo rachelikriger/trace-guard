@@ -48,6 +48,27 @@ JSON output example (`--output json`):
 }
 ```
 
+## Elastic Source Adapter
+
+`ElasticEventSource` integrates Elastic without changing core validation/runner contracts.
+
+```ts
+import { ElasticEventSource, ElasticHttpClient, runValidation } from 'trace-guard';
+
+const client = new ElasticHttpClient({
+  endpoint: 'https://my-elastic.example.com',
+  apiKey: process.env.ELASTIC_API_KEY,
+});
+
+const source = new ElasticEventSource({
+  index: 'trace-events',
+  client,
+  defaultLimit: 500,
+});
+
+const result = await runValidation({ flow, config, source });
+```
+
 ## Import Guide
 
 Preferred entrypoints for library usage:

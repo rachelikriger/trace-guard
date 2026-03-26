@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-Status: After Phase 4 baseline CLI integration, before external adapters and CLI/reporting polish.
+Status: After Phase 5 Elastic source integration, before advanced reporting/operability work.
 
 ## Completed
 
@@ -54,8 +54,8 @@ Status: After Phase 4 baseline CLI integration, before external adapters and CLI
 
 ## Open Work (High-Level)
 
-- CLI/reporting UX polish (machine-friendly output mode, improved help/usage, integration tests)
-- external adapters (Elastic) later, without changing core validation logic
+- CLI/reporting UX polish and operability refinements
+- optional advanced ingestion/mapping features (kept intentionally out of current scope)
 
 ## Quality Gates
 

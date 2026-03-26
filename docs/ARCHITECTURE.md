@@ -56,6 +56,14 @@ Reusable foundational types:
 - `ParseIssue`
 - branded identifier types
 
+### 6) Source Adapters (`src/sources/*`)
+
+Event acquisition is isolated behind `EventSource`.
+
+- `MockEventSource` / `FileEventSource` are local/testing adapters.
+- `ElasticEventSource` is an external adapter that translates Elastic search hits into internal `TraceEvent`.
+- `ElasticClient` and `ElasticHttpClient` keep transport concerns out of runner/core logic.
+
 ## Validation Rule Semantics (Current)
 
 - `expected`: at least one event of the given type must exist.
@@ -71,9 +79,9 @@ Implemented:
 - validation engine and report model
 - runner/polling orchestration with `EventSource` and timeout/pass semantics
 - CLI command surface (`run`) with file-based inputs and stable exit codes
+- external Elastic source adapter via `EventSource` boundary (without core changes)
 - tests for rule evaluators, flow aggregation, and runner behavior
 
 Not implemented yet:
 
-- concrete external source adapters (Elastic, etc.)
 - advanced reporting modes and CLI UX polish
